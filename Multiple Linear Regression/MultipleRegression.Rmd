@@ -1,0 +1,109 @@
+---
+title: "Multiple Regression"
+author: "Divit Vasu"
+date: "21 September 2018"
+output: html_document
+runtime: shiny
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Multiple Linear Regression
+
+The multiple linear regression model is used to predict response
+(independent) variable based on two or more predictor variable
+(dependent) variable.
+
+The multiple linear regression model can be stated as follows
+
+$Y_i= \beta_0+ \beta_1*X_i1+\beta_2X_i2+...+\beta_px_ip+\epsilon_i$
+where
+
+$Y_i$is the $i^{th}$ value of the response variable,
+$X_{ij}$is the $i^{th}$ observtaion of the $j^{th}$ predictor variable,
+$\beta_0,\beta_1,...,\beta_p$ are the parameters (regression coefficients),
+$\epsilon_i$ random error term with E($\epsilon_i$) = 0 and V($\epsilon_i$) = $\sigma^2$,$\epsilon_i$~IN(0,$\sigma^2$)  
+
+##Definition
+
+* Load the data trees from datasets package.
+* Display the structure of trees data set.
+* Check the dimension of trees data set.
+* Obtain the summary statistics for trees data set.
+* Fit a simple linear regression model with Volume as dependent and
+  Girth as independent variable.
+* Fit a simple linear regression model with Volume as dependent and
+  Height as independent variable.
+* Fit a multiple linear regression model with Volume as dependent and
+  Height and Girth as independent variable.
+
+
+* Load the data set
+```{r}
+data("trees")
+```
+
+* Display structure of data set
+```{r}
+str(trees)
+```
+*  Display dimension of trees data set
+```{r}
+dim(trees)
+```
+* Display Summary of data set
+```{r}
+summary(trees)
+
+```
+
+* Correlation coefficient matrix
+
+```{r}
+cor(trees)
+plot(trees) # Scatter plot
+```
+
+* Fit linear model Volume on Girth
+```{r}
+model1<-lm(Volume~Girth,data = trees)
+model1
+
+summary(model1)
+```
+
+
+For both the coefficient (intercept) and (slope) the p-values are less than 0.05, we concldue that the regression coefficients are significant at 0.05 level of significance.
+
+The multiple \(R^2\) is 0.9353. That is 93.53 percent of the variation in Volume of tree is explained by the Girth.
+
+
+* Fit linear model Volume on Height
+```{r}
+model2<-lm(Volume~Height,data = trees)
+model2
+
+summary(model2)
+```
+
+For both the coefficient (intercept) and (slope) the p-values are less than 0.05, we concldue that the regression coefficients are significant at 0.05 level of significance.
+The multiple \(R^2\) is 0.3579. That is 35.79 percent of the variation in Volume of tree is explained by the Height.
+The coefficient of determination for model 1 is \(R^2\) is 0.9353 and for model 2 is \(R^2\) is 0.3579.
+Girth is preferable to predict the volume of timber using simple linear regression model, as the amount of variation explained by girth about the volume is more compared to the amount of variation explained by height.
+
+* Fit linear model Volume on Height and Girth
+```{r}
+model3<-lm(Volume~Height+Girth,data = trees)
+model3
+
+summary(model3)
+```
+
+##Conclusion
+
+For all the coefficient the p-values are less than 0.05, we concldue that the regression coefficients are significant at 0.05 level of significance.
+
+The multiple \(R^2\) is 0.948. That is 94.8 percent of the variation in Volume of tree is explained by the Girth and Height.
