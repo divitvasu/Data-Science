@@ -1,0 +1,103 @@
+---
+title: "One-Way Anova"
+author: "Divit Vasu"
+date: "14 August 2018"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#One Way ANOVA
+
+One-way ANOVA (Analysis of Variance) is used to examine the differences between means
+of more than two independent samples. It is used when we have a **categorical independent variable** (treatment) (with more than two categories) and a normally distributed **interval or ratio dependent variable** (Response).
+
+The objective is to test the differences in means of the dependent variable (response)
+across various levels of independent variables (treatment).
+
+##Example
+
+Ages of 3 particlular groups as reported by a survey of a population are given below:  
+```{r, echo=TRUE}
+Group1 <- c(53, 48, 32, 49, 69, 72, 84)
+Group2 <- c(22, 30, 19, 47, 49, 55, 58)
+Group3 <- c(61, 71, 77, 81, 59, 68, 53)
+```
+Perform one-way ANOVA to test whether the difference between the ages of the three groups is significant or not.
+
+The hypothesis testing problem is:
+
+\(H_0:\) there is no difference between ages of all three groups  
+against  
+\(H_1:\) difference among means is significant.
+
+##Checking normality of data
+
+```{r, echo=TRUE}
+res <- shapiro.test(Group1)
+res
+```
+
+```{r, echo=TRUE}
+res <- shapiro.test(Group2)
+res
+```
+
+```{r, echo=TRUE}
+res <- shapiro.test(Group3)
+res
+```
+
+As the p-values are 0.8461, 0.2535 and 0.9044 respectively for Group1, Group2 and Group3 which are all more than 0.05, we accept the null hypothesis that the data is normalized, and further
+one way ANOVA can be performed on it.
+
+##Testing Normality Graphically
+
+```{r, echo=TRUE}
+qqnorm(Group1) # Quantile-Quantile Plot
+qqline(Group1, distribution=qnorm)
+```
+
+Similarly we can check normal line for Group2 and Group3.
+
+##Testing Homogeneity of Variances
+
+**Bartlett's test** is used to test if k samples have equal variances. Equal variances across samples is called homogeneity of variances.
+Before applying ANOVA we have to check the assumption about the homogeneity of variances.
+
+The hypothesis testing problem is
+
+\(H_0:\) \(\sigma_1^2\) = \(\sigma_2^2\) = \(\sigma_3^2\)  
+\(H_1:\) \(\sigma_i^2\) = \(\sigma_j^2\) for at least one pair (i, j)
+
+```{r, echo=TRUE}
+result <- data.frame(Group1, Group2, Group3)
+res.var<-bartlett.test(list(result$Group1, result$Group2, result$Group3))
+res.var
+```
+
+As the p-value 0.4125 is not less than 0.05, we fail to reject the null hypothesis \(H_0\) at 5% level of significance. We conclude that the variances are equal across samples.
+
+#One Way ANOVA
+
+```{r, echo=TRUE}
+result
+st_result <- stack(result)
+res <- oneway.test(values~ind, data = st_result)
+res
+```
+
+Since p-value which 0.01165 is very less than 0.05 we reject the null hypothesis.
+
+##Pair-wise Comparison
+
+```{r, echo=TRUE}
+res.anova <- aov(values~ind, data = st_result)
+TK <- TukeyHSD(res.anova)
+TK
+plot(TK)
+```
